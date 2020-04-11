@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "set ELECTRON_DISABLE_SECURITY_WARNINGS=true && electron ."
   },
   "keywords": [],
   "author": "",
