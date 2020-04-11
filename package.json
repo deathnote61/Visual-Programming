@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "set ELECTRON_DISABLE_SECURITY_WARNINGS=true && electron ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^8.1.1"
+    "electron": "^8.1.1",
+    "uuid": "^7.0.3"
   }
 }
