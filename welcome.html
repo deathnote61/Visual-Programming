@@ -1,0 +1,111 @@
+
+<html>
+<head>
+
+</head>
+<body style="background-color:aqua;
+            font-family: 'Lucida Sans'">
+	<h1 style="text-align:center;">Simple Cashier Program</h1><br/>
+	<form id="form">
+        <div style="background-color:gray;
+                    padding: 5px;
+                    border-radius: 5px;">
+		    <label for="name">Name:</label><br/>
+		    <input type="text" id="nm" name="name" required />
+		    <br/><br/>
+		    <label for="quantity">Quantity:</label><br/>
+		    <input type="text" id="qty" name="quantity" required />
+		    <br/><br/>
+		    <label for="price">Price:</label><br/>
+		    <input type="text" id="prc" name="price" placeholder="Ex : 12000" required />
+            <input type="button" value="Calculate" onclick="calculate()"/>
+            <br/><br/>
+		    <label for="total">Total Price:</label><br/>
+		    <input type="text" id="ttl" name="total" required />
+		    <br/><br/>
+            <input type="submit" value="Confirm"/>
+        </div>
+	</form>
+
+    <script>
+        
+        function calculate(){
+            var quantity = parseInt(document.getElementById("qty").value);
+            var price = parseInt(document.getElementById("prc").value);
+            var result =  quantity * price;
+            document.getElementById("ttl").value = result;
+        }
+            
+		const electron = require("electron");
+		const {
+			ipcRenderer
+		} = electron;
+
+		const form = document.getElementById("form");
+		const elements = {};
+
+		form.addEventListener("submit", event => {
+			event.preventDefault();
+
+			for (let i = 0;i  < form.elements.length; i++) {
+				if (form.elements[i].type !== "submit")
+					elements[form.elements[i].name] = form.elements[i].value;
+			}
+
+            ipcRenderer.send("item:create", elements);
+            
+            alert("Item Successfully Added to List!");
+
+            document.getElementById("nm").value = '';
+            document.getElementById("qty").value = '';
+            document.getElementById("prc").value = '';
+            document.getElementById("ttl").value = '';
+		});
+		</script>
+</body>
+
+<script>
+    const electron = require("electron");
+    const { 
+        ipcRenderer
+    } = electron;
+    ipcRenderer.send("item:request:today");
+
+    ipcRenderer.on("item:request:today", (event, item) => {
+        const listDiv = document.getElementById("List");
+        item.foreach(item => {
+            const itemDiv = document.createElement("div");
+            const nameParagraph = document.createElement("p");
+            nameParagraph.innerHTML = `Name: ${item.name}`;
+
+            const quantityParagraph = document.createElement("p");
+            quantityParagraph.innerHTML = `Quantity: ${item.quantity}`;
+
+            const priceParagraph = document.createElement("p");
+            priceParagraph.innerHTML = `Price: ${item.price}`;
+
+            const totalParagraph = document.createElement("p");
+            totalParagraph.innerHTML = `Total Price: ${item.total}`;
+
+            const hr = document.createElement("hr");
+
+            itemDiv.appendChild(nameParagraph);
+            itemDiv.appendChild(quantityParagraph);
+            itemDiv.appendChild(priceParagraph);
+            itemDiv.appendChild(totalParagraph);
+
+            itemDiv.appendChild(hr);
+
+            listDiv.append(itemDiv);
+
+
+
+        });
+
+    });
+    const done = id => {
+        ipcRenderer.send("item:done", id);
+    };
+</script>
+
+</html>

@@ -1,0 +1,44 @@
+<html>
+<body>
+    <b1> Item list </b1>
+    <div id="list"></div>
+<script>
+    const electron = require("electron");
+    const {
+        ipcRenderer
+    } = electron;
+
+    ipcRenderer.send("item:request:list"); 
+    
+    ipcRenderer.on("item:response:list", (event, items) => {
+        const listDiv = document.getElementById("list");
+        items.forEach(item => {
+            const itemDiv = document.createElement("div");
+           
+            const nameParagraph = document.createElement("p");
+            nameParagraph.innerHTML = `Name: ${item.name}`;
+
+            const quantityParagraph = document.createElement("p");
+            quantityParagraph.innerHTML = `Quantity: ${item.quantity}`;
+
+            const priceParagraph = document.createElement("p");
+            priceParagraph.innerHTML = `Price: ${item.price}`;
+
+            const totalParagraph = document.createElement("p");
+            totalParagraph.innerHTML = `Total Price: ${item.total}`;
+
+            const hr = document.createElement("hr");
+
+            itemDiv.appendChild(nameParagraph);
+            itemDiv.appendChild(quantityParagraph);
+            itemDiv.appendChild(priceParagraph);
+            itemDiv.appendChild(totalParagraph);
+            itemDiv.appendChild(hr);
+            
+            listDiv.append(itemDiv);
+
+        });
+    });
+</script>
+</body>
+</html>
