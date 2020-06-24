@@ -1,9 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <style>
+        body  {
+            background-image: url("main.jpg");
+            background-color: #cccccc;
+            background-size: cover;
+          }
+    </style>
 </head>
 <body>
-	Hello world
+	<p style="text-align: center;
+              font-family: lucida handwriting;
+              font-size: 27px;
+              color: white">Reins</p>
+    <div style="margin: auto 47px;">
+    <h2 style="color: white;
+               text-align: center;">Today's Reservation</h2>
+    <div id="list"  style="color:white;
+                    font-family: Gill Sans MT;
+                    padding-top: 10px;
+                    height: 270px;
+                    overflow: auto;"></div>
+    </div>
+<script type="text/javascript">
+    const electron = require("electron");
+    const {ipcRenderer} = electron;
+    ipcRenderer.send('reservation:request:today');
+
+    ipcRenderer.on('reservation:response:today', (event, reservations) => {
+        const listDiv = document.getElementById('list');
+			listDiv.innerHTML = "";
+
+			//delete childs
+			while(listDiv.firstChild){
+				listDiv.removeChild(listDiv.firstChild);
+			}
+            
+            reservations.forEach(reservation => {
+            let reservationDiv = document.createElement("div");
+            reservationDiv.classList.add('reservation');
+
+            let nameParagraph = document.createElement("p");
+            nameParagraph.innerHTML = `Name: ${reservation.name}`;
+
+            let numberParagraph = document.createElement("p");
+            numberParagraph.innerHTML = `Number of People: ${reservation.number}`;
+
+            let dateParagraph = document.createElement("p");
+            dateParagraph.innerHTML = `Date: ${reservation.date}`;
+
+            let noteParagraph = document.createElement("p");
+            noteParagraph.innerHTML = `Note: ${reservation.note}`;
+
+            let doneParagraph = document.createElement("p");
+            doneParagraph.innerHTML = `Done: ${reservation.done ? "Yes" : "No"}`;
+
+            let doneButton = document.createElement("button");
+            doneButton.innerHTML = "Done";
+            doneButton.disabled = reservation.done ? true : false;
+            doneButton.onclick = () => done(reservation.id);
+			
+			let hr = document.createElement("hr");
+
+            reservationDiv.appendChild(nameParagraph);
+            reservationDiv.appendChild(numberParagraph);
+            reservationDiv.appendChild(dateParagraph);
+            reservationDiv.appendChild(noteParagraph);
+            reservationDiv.appendChild(doneParagraph);
+			reservationDiv.appendChild(doneButton);
+			
+
+			listDiv.appendChild(reservationDiv);
+			reservationDiv.appendChild(hr);
+
+
+
+        });
+
+    });
+    const done = id => {
+        ipcRenderer.send("reservation:done", id);
+    };
+</script>
+
 </body>
 </html>

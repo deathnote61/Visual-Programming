@@ -1,0 +1,64 @@
+<html>
+    <head>
+		<style>
+				body  {
+					background-image: url("create.jpg");
+					background-color: #cccccc;
+					background-size: cover;
+					text-align: center;
+				  }
+		</style>
+	</head>
+<body>
+    <h3 style="color: white;
+        text-align: center;
+        font-family: lucida handwriting;
+        margin-top: 90px;"> Reservations List </h3>
+    <div style="margin: 40px 50px;
+                color: white;
+                overflow: auto;
+                height: 300px;">
+    <div id="list"></div>
+    </div>
+<script>
+    const electron = require("electron");
+    const {ipcRenderer} = electron;
+
+    ipcRenderer.send('reservation:request:list'); 
+    
+    ipcRenderer.on('reservation:response:list', (event, reservations) => {
+        const listDiv = document.getElementById("list");
+        reservations.forEach(reservation => {
+            let reservationDiv = document.createElement("div");
+           
+            let nameParagraph = document.createElement("p");
+            nameParagraph.innerHTML = `Name: ${reservation.name}`;
+
+            let numberParagraph = document.createElement("p");
+            numberParagraph.innerHTML = `Number of People: ${reservation.number}`;
+
+            let dateParagraph = document.createElement("p");
+            dateParagraph.innerHTML = `Date: ${reservation.date}`;
+
+            let noteParagraph = document.createElement("p");
+            noteParagraph.innerHTML = `Note: ${reservation.note}`;
+
+            let doneParagraph = document.createElement("p");
+            doneParagraph.innerHTML = `Done: ${reservation.done ? "Yes" : "No"}`;
+
+            let hr = document.createElement("hr");
+
+            reservationDiv.appendChild(nameParagraph);
+            reservationDiv.appendChild(numberParagraph);
+            reservationDiv.appendChild(dateParagraph);
+            reservationDiv.appendChild(noteParagraph);
+            reservationDiv.appendChild(doneParagraph);
+            reservationDiv.appendChild(hr);
+            
+            listDiv.append(reservationDiv);
+
+        });
+    });
+</script>
+</body>
+</html>

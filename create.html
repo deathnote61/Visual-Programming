@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<style>
+				body  {
+					background-image: url("create.jpg");
+					background-color: #cccccc;
+					background-size: cover;
+					text-align: center;
+				  }
+		</style>
+	</head>
+<body>
+	<div style="margin: 100px auto;">
+	<h3 style="color: white;
+		  	   text-align: center;
+			   font-family: lucida handwriting;">New Reservation</h3><br/>
+	<form id="form" style="color: white;">
+		<label for="name">Customer's Name:</label><br/>
+		<input type="text" name="name" placeholder="Just one name if in groups" required />
+		<br/><br/>
+		<label for="number">Number of People:</label><br/>
+		<input type="number" name="number" required />
+		<br/><br/>
+		<label for="date">Dine-in Date:</label><br/>
+		<input type="date" name="date" placeholder="YYYY-MM-DD" required />
+		<br/><br/>
+		<label for="note">Note:</label><br/>
+		<textarea type="text" name="note" required></textarea>
+		<br/><br/>
+		<input type="submit" />
+	</form>
+</div>
+	<script>
+		const electron = require("electron");
+		const {ipcRenderer} = electron;
+
+		const form = document.getElementById("form");
+		const elements = {};
+
+		form.addEventListener("submit", event => {
+			event.preventDefault();
+
+			for (let i = 0;i  < form.elements.length; i++) {
+				if (form.elements[i].type !== "submit")
+					elements[form.elements[i].name] = form.elements[i].value;
+			}
+
+			ipcRenderer.send("reservation:create", elements);
+		});
+		</script>
+</body>
+
+</html>
